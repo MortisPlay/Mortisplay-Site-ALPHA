@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mortis Play — ALPHA preview</title>
+    <style>
+      :root {
+        --bg-1: #070b17;
+        --bg-2: #10182d;
+        --panel: rgba(15, 23, 42, 0.72);
+        --panel-strong: rgba(15, 23, 42, 0.92);
+        --border: rgba(148, 163, 184, 0.28);
+        --text: #f8fafc;
+        --muted: #cbd5e1;
+        --soft: #94a3b8;
+        --primary: #8b5cf6;
+        --primary-2: #22d3ee;
+        --accent: #f59e0b;
+        --accent-2: #f43f5e;
+        --success: #34d399;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(139, 92, 246, 0.28), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(34, 211, 238, 0.18), transparent 24%),
+          linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 46%, #0d1326 100%);
+        color: var(--text);
+      }
+
+      a { color: inherit; text-decoration: none; }
+
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px 20px 64px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+        padding: 16px 18px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(15, 23, 42, 0.45);
+        backdrop-filter: blur(12px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+      }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.9), rgba(34, 211, 238, 0.75));
+        box-shadow: 0 8px 22px rgba(139, 92, 246, 0.5);
+        font-size: 1.1rem;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .nav a {
+        opacity: 0.8;
+      }
+
+      .nav a:hover { opacity: 1; }
+
+      .nav-btn,
+      .primary-btn,
+      .secondary-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 18px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .primary-btn {
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        box-shadow: 0 16px 30px rgba(139, 92, 246, 0.35);
+      }
+
+      .secondary-btn {
+        background: rgba(148, 163, 184, 0.08);
+        border-color: var(--border);
+      }
+
+      .nav-btn:hover,
+      .primary-btn:hover,
+      .secondary-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 28px;
+        align-items: center;
+        padding: 26px;
+        border-radius: 28px;
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid var(--border);
+        box-shadow: 0 30px 70px rgba(2, 6, 23, 0.45);
+      }
+
+      .badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(251, 146, 60, 0.7);
+        background: linear-gradient(135deg, rgba(251, 146, 60, 0.18), rgba(239, 68, 68, 0.12));
+        color: #fbbf24;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(2.2rem, 4vw, 4.3rem);
+        line-height: 1.02;
+        letter-spacing: -0.06em;
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #f8fafc 0%, #a78bfa 30%, #67e8f9 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero p {
+        margin: 20px 0 0;
+        max-width: 630px;
+        font-size: 1.05rem;
+        line-height: 1.72;
+        color: var(--muted);
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .mini-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 32px;
+      }
+
+      .stat {
+        padding: 18px 16px;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        background: rgba(148, 163, 184, 0.05);
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+      }
+
+      .stat span {
+        display: block;
+        color: var(--soft);
+        font-size: 0.85rem;
+      }
+
+      .visual-card {
+        position: relative;
+        padding: 16px;
+        border-radius: 26px;
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+        border: 1px solid var(--border);
+        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.5);
+      }
+
+      .photo-shell {
+        position: relative;
+        overflow: hidden;
+        border-radius: 22px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: #0f172a;
+      }
+
+      .photo-shell img {
+        display: block;
+        width: 100%;
+        height: 580px;
+        object-fit: cover;
+      }
+
+      .floating-info {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(34, 211, 238, 0.4);
+        background: rgba(15, 23, 42, 0.74);
+        backdrop-filter: blur(10px);
+      }
+
+      .floating-info strong {
+        display: block;
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #67e8f9;
+      }
+
+      .floating-info span {
+        display: block;
+        margin-top: 4px;
+        font-weight: 700;
+      }
+
+      .section {
+        margin-top: 42px;
+        padding-top: 18px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(1.6rem, 2vw, 2.4rem);
+      }
+
+      .section-head p {
+        margin: 0;
+        color: var(--soft);
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        overflow: hidden;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.5);
+      }
+
+      .card-media {
+        display: block;
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .card-body {
+        padding: 16px;
+      }
+
+      .card-tag {
+        display: inline-block;
+        margin-bottom: 10px;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #67e8f9;
+        font-weight: 800;
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 1.05rem;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--soft);
+        font-size: 0.92rem;
+        line-height: 1.6;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .feature {
+        padding: 22px 18px;
+        border-radius: 22px;
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.45);
+      }
+
+      .feature-icon {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border-radius: 16px;
+        margin-bottom: 16px;
+        font-size: 1.1rem;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(34, 211, 238, 0.14));
+        border: 1px solid rgba(139, 92, 246, 0.4);
+      }
+
+      .feature h3 {
+        margin: 0 0 10px;
+        font-size: 1.08rem;
+      }
+
+      .feature p {
+        margin: 0;
+        color: var(--soft);
+        line-height: 1.7;
+      }
+
+      .cta-panel {
+        margin-top: 42px;
+        padding: 30px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(34, 211, 238, 0.08), rgba(15, 23, 42, 0.7));
+      }
+
+      .cta-panel-inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .cta-panel h3 {
+        margin: 0 0 6px;
+        font-size: clamp(1.4rem, 2vw, 2rem);
+      }
+
+      .cta-panel p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      @media (max-width: 960px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .gallery {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .nav {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .gallery {
+          grid-template-columns: 1fr;
+        }
+
+        .mini-stats {
+          grid-template-columns: 1fr;
+        }
+
+        .page {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+
+        .hero,
+        .cta-panel {
+          padding: 18px;
+        }
+
+        .photo-shell img {
+          height: 420px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">M</div>
+          <span>Mortis Play</span>
+        </div>
+
+        <nav class="nav" aria-label="Main navigation">
+          <a href="#preview">Превью</a>
+          <a href="#gallery">Фото</a>
+          <a href="#features">Что есть</a>
+          <a href="../index.html" class="nav-btn secondary-btn">Открыть сайт</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero" id="preview">
+          <div>
+            <div class="badge-row">
+              <span class="badge">ALPHA</span>
+              <span class="badge" style="border-color: rgba(34, 211, 238, 0.7); background: rgba(34, 211, 238, 0.08); color: #67e8f9;">PREVIEW</span>
+            </div>
+
+            <h1>
+              <span class="gradient-text">Mortis Play</span><br />
+              альфа-страница
+            </h1>
+
+            <p>
+              Это демо-страница, где показано, как выглядит текущий визуальный стиль проекта:
+              неоновые акценты, тёмный фон, стеклянные карточки, фото и блоки контента в духе gaming-сайта.
+            </p>
+
+            <div class="cta-row">
+              <a href="../index.html" class="primary-btn">Посмотреть основной сайт</a>
+              <a href="#gallery" class="secondary-btn">Смотреть фото</a>
+            </div>
+
+            <div class="mini-stats">
+              <div class="stat">
+                <strong>4+</strong>
+                <span>блоков контента</span>
+              </div>
+              <div class="stat">
+                <strong>3</strong>
+                <span>демо-режима</span>
+              </div>
+              <div class="stat">
+                <strong>100%</strong>
+                <span>локальные фото</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="visual-card">
+            <div class="photo-shell">
+              <img src="../assets/photo.jpg" alt="Mortis Play preview" />
+              <div class="floating-info">
+                <strong>alpha</strong>
+                <span>Сайт в разработке</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="gallery">
+          <div class="section-head">
+            <h2>Новые материалы проекта</h2>
+            <p>Фото и видео из папки проекта с описанием ключевых обновлений интерфейса и контента</p>
+          </div>
+
+          <div class="gallery">
+            <article class="card">
+              <video class="card-media" src="./1 нарезка проекта.mp4" poster="./1.png" controls preload="metadata"></video>
+              <div class="card-body">
+                <span class="card-tag">Community</span>
+                <h3>Обновлённые мемы комьюнити</h3>
+                <p>В этой карточке будут собраны мемы комьюнити от авторов, участников и активных подписчиков проекта.</p>
+              </div>
+            </article>
+
+            <article class="card">
+              <video class="card-media" src="./2 нарезка проекта (выкл стекло).mp4" poster="./2.png" controls preload="metadata"></video>
+              <div class="card-body">
+                <span class="card-tag">Comparison</span>
+                <h3>Сравнение: жидкое стекло выключено</h3>
+                <p>Показывает, как выглядит интерфейс без эффекта жидкого стекла — более чистый и минималистичный вариант.</p>
+              </div>
+            </article>
+
+            <article class="card">
+              <video class="card-media" src="./3 проект вкл стекло.mp4" poster="./3.png" controls preload="metadata"></video>
+              <div class="card-body">
+                <span class="card-tag">Comparison</span>
+                <h3>Сравнение: жидкое стекло включено</h3>
+                <p>Вторая часть сравнения демонстрирует, как новая версия интерфейса выглядит с включённым жидким стеклом.</p>
+              </div>
+            </article>
+
+            <article class="card">
+              <img class="card-media" src="./2.png" alt="Обновлённая загрузка сайта" />
+              <div class="card-body">
+                <span class="card-tag">UI</span>
+                <h3>Обновлённая загрузка сайта</h3>
+                <p>Новый вариант экрана загрузки сайта с более современной и аккуратной визуальной подачей.</p>
+              </div>
+            </article>
+
+            <article class="card">
+              <img class="card-media" src="./3.png" alt="Обновлённая профильная система" />
+              <div class="card-body">
+                <span class="card-tag">Profile</span>
+                <h3>Обновлённая профильная система</h3>
+                <p>Локальный профильный интерфейс, который в дальнейшем может стать общедоступной системой для пользователей.</p>
+              </div>
+            </article>
+
+            <article class="card">
+              <img class="card-media" src="./4.png" alt="Награда за просмотр видео" />
+              <div class="card-body">
+                <span class="card-tag">Reward</span>
+                <h3>Награда за просмотр видео</h3>
+                <p>Сцена с системой наград за просмотр контента и поощрением активного участия в проекте.</p>
+              </div>
+            </article>
+
+            <article class="card">
+              <img class="card-media" src="./5.png" alt="Магазин цифровых товаров" />
+              <div class="card-body">
+                <span class="card-tag">Shop</span>
+                <h3>Магазин с цифровыми товарами</h3>
+                <p>Витрина с различными цифровыми товарами, где можно будет предлагать аватары, рамки и другие внутриигровые элементы.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="features">
+          <div class="section-head">
+            <h2>Что уже есть в проекте</h2>
+            <p>Пример структуры страницы, которую можно расширять дальше</p>
+          </div>
+
+          <div class="features">
+            <article class="feature">
+              <div class="feature-icon">🎮</div>
+              <h3>Главная страница</h3>
+              <p>Больше контента, крупный заголовок, CTA-кнопки, атмосфера старта и интро проекта.</p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon">📹</div>
+              <h3>Видео и клипы</h3>
+              <p>Секция для роликов, Twitch-материалов и важных моментов, которые можно собирать в одном месте.</p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon">🛍️</div>
+              <h3>Комьюнити и магазин</h3>
+              <p>Блоки для новостей, общения, мерча и дополнительных разделов сайта.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="cta-panel">
+          <div class="cta-panel-inner">
+            <div>
+              <h3>Это альфа-предпросмотр страницы</h3>
+              <p>Дизайн уже выглядит как полноценный гейминг-лендинг, а контент можно быстро наполнять дальше.</p>
+            </div>
+            <a href="../index.html" class="primary-btn">Перейти к основному сайту</a>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
